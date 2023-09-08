@@ -1,9 +1,18 @@
 from tftb.generators import amgauss, fmlin
 import matplotlib.pyplot as plt
 import numpy as np
+from scipy.fft import fft, fftfreq
+
 
 # Define the time values
-t = np.linspace(0, 3000, 1000)  # Time from 0 to 1 second, with 1000 points
+# t = np.linspace(0, 3000, 1000)  # Time from 0 to 1 second, with 1000 points
+N = 3000
+fs = 1000
+dt = 1 / fs
+t = np.arange(0, N*dt, dt)
+
+# Print the result
+print("Sampling Frequency:", fs, "Hz")
 
 # Define the frequencies of the three components
 frequencies = [5, 12, 15]  # Frequencies in Hz
@@ -23,13 +32,23 @@ plt.ylabel('Amplitude')
 plt.grid(True)
 plt.show()
 
+
 ## Analyse the final signal: stationary or non-stationary
 # The final signal is stationary because it doesn't cahnge over time
 
 # Run a FFT analysis to get an idea of the frequency components. 
 # Reflect on the results of this analysis
+fft_result = np.fft.fft(signal)
+frequencies = np.fft.fftfreq(len(fft_result), 1 / fs)
 
-
+plt.figure(figsize=(8, 4))
+plt.plot(frequencies, np.abs(fft_result))
+plt.title("FFT of the Signal")
+plt.xlabel("Frequency (Hz)")
+plt.ylabel("Amplitude")
+plt.grid(True)
+plt.xlim(-50, 50)
+plt.show()
 
 # How to decide the window size if STFT or WT is going to be used?
 
