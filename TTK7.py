@@ -3,6 +3,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 from scipy.fft import fft, fftfreq
 from tftb.processing import WignerVilleDistribution
+from scipy.signal import hamming
+from tftb.processing import Spectrogram
 
 
 
@@ -26,13 +28,13 @@ components = np.sin(2 * np.pi * np.outer(frequencies, t))
 signal = np.sum(components, axis=0)
 
 # Plot the signal
-plt.figure(figsize=(10, 6))
-plt.plot(t, signal)
-plt.title('Signal with 5Hz, 12Hz, and 15Hz Components')
-plt.xlabel('Time (s)')
-plt.ylabel('Amplitude')
-plt.grid(True)
-plt.show()
+# plt.figure(figsize=(10, 6))
+# plt.plot(t, signal)
+# plt.title('Signal with 5Hz, 12Hz, and 15Hz Components')
+# plt.xlabel('Time (s)')
+# plt.ylabel('Amplitude')
+# plt.grid(True)
+# plt.show()
 
 
 ## Analyse the final signal: stationary or non-stationary
@@ -40,17 +42,17 @@ plt.show()
 
 # Run a FFT analysis to get an idea of the frequency components. 
 # Reflect on the results of this analysis
-fft_result = np.fft.fft(signal)
-frequencies = np.fft.fftfreq(len(fft_result), 1 / fs)
+# fft_result = np.fft.fft(signal)
+# frequencies = np.fft.fftfreq(len(fft_result), 1 / fs)
 
-plt.figure(figsize=(8, 4))
-plt.plot(frequencies, np.abs(fft_result))
-plt.title("FFT of the Signal")
-plt.xlabel("Frequency (Hz)")
-plt.ylabel("Amplitude")
-plt.grid(True)
-plt.xlim(-50, 50)
-plt.show()
+# plt.figure(figsize=(8, 4))
+# plt.plot(frequencies, np.abs(fft_result))
+# plt.title("FFT of the Signal")
+# plt.xlabel("Frequency (Hz)")
+# plt.ylabel("Amplitude")
+# plt.grid(True)
+# plt.xlim(-50, 50)
+# plt.show()
 
 ## How to decide the window size if STFT or WT is going to be used?
 # Since we are dealing with a stationary signal a longer window is preferred to capture
@@ -60,13 +62,22 @@ plt.show()
 ## Which signal processing technique is best for your signal (FFT, STFT, WVT, WT, HT)?
 
 # STFT
+fwindow = hamming(1000)
+spec = Spectrogram(signal, n_fbins=128, fwindow=fwindow)
+spec.run()
+spec.plot(kind="contour", threshold=0.1, show_tf=False)
 
 # WVT
-n_points = 128
-fmin, fmax = 0.0, 0.5
-wvd = WignerVilleDistribution(signal)
-wvd.run()
-wvd.plot(kind='contour', extent=[0, n_points, fmin, fmax])
+# n_points = 128
+# fmin, fmax = 0.0, 0.5
+# wvd = WignerVilleDistribution(signal)
+# wvd.run()
+# wvd.plot(kind='contour', extent=[0, n_points, fmin, fmax])
+
+# WT
+
+#HT
+
 
 
 # # Add an offset and repeat the analysis
