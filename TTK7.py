@@ -2,7 +2,7 @@ from tftb.generators import amgauss, fmlin, fmconst
 import matplotlib.pyplot as plt
 import numpy as np
 from scipy.fft import fft, fftfreq
-from tftb.processing import WignerVilleDistribution
+from tftb.processing import WignerVilleDistribution, inst_freq, plotifl
 
 
 
@@ -68,6 +68,9 @@ wvd = WignerVilleDistribution(signal)
 wvd.run()
 wvd.plot(kind='contour', extent=[0, n_points, fmin, fmax])
 
+# Hilbert Transform / Instantaneous Frequency
+ifr = inst_freq(signal)[0]
+plotifl(np.linspace(0,len(ifr), len(ifr)), ifr)
 
 # # Add an offset and repeat the analysis
 # offset = 2
