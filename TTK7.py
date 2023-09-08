@@ -1,7 +1,9 @@
-from tftb.generators import amgauss, fmlin
+from tftb.generators import amgauss, fmlin, fmconst
 import matplotlib.pyplot as plt
 import numpy as np
 from scipy.fft import fft, fftfreq
+from tftb.processing import WignerVilleDistribution
+
 
 
 # Define the time values
@@ -50,10 +52,22 @@ plt.grid(True)
 plt.xlim(-50, 50)
 plt.show()
 
-# How to decide the window size if STFT or WT is going to be used?
+## How to decide the window size if STFT or WT is going to be used?
+# Since we are dealing with a stationary signal a longer window is preferred to capture
+# more frequency details. A longer window is also preferred as the frequency components are of low frequency.
 
 
-# Which signal processing technique is best for your signal (FFT, STFT, WVT, WT, HT)?
+## Which signal processing technique is best for your signal (FFT, STFT, WVT, WT, HT)?
+
+# STFT
+
+# WVT
+n_points = 128
+fmin, fmax = 0.0, 0.5
+wvd = WignerVilleDistribution(signal)
+wvd.run()
+wvd.plot(kind='contour', extent=[0, n_points, fmin, fmax])
+
 
 # # Add an offset and repeat the analysis
 # offset = 2
