@@ -2,7 +2,7 @@ from tftb.generators import amgauss, fmlin, fmconst
 import matplotlib.pyplot as plt
 import numpy as np
 from scipy.fft import fft, fftfreq
-from tftb.processing import WignerVilleDistribution
+from tftb.processing import WignerVilleDistribution, inst_freq, plotifl
 from scipy.signal import hamming
 from tftb.processing import Spectrogram
 
@@ -68,17 +68,15 @@ spec.run()
 spec.plot(kind="contour", threshold=0.1, show_tf=False)
 
 # WVT
-# n_points = 128
-# fmin, fmax = 0.0, 0.5
-# wvd = WignerVilleDistribution(signal)
-# wvd.run()
-# wvd.plot(kind='contour', extent=[0, n_points, fmin, fmax])
+n_points = 128
+fmin, fmax = 0.0, 0.5
+wvd = WignerVilleDistribution(signal)
+wvd.run()
+wvd.plot(kind='contour', extent=[0, n_points, fmin, fmax])
 
-# WT
-
-#HT
-
-
+# Hilbert Transform / Instantaneous Frequency
+ifr = inst_freq(signal)[0]
+plotifl(np.linspace(0,len(ifr), len(ifr)), ifr)
 
 # # Add an offset and repeat the analysis
 # offset = 2
