@@ -36,11 +36,48 @@ plt.show()
 
 # Which signal processing technique is best for your signal (FFT, STFT, WVT, WT, HT)?
 
-# Add an offset and repeat the analysis
+# # Add an offset and repeat the analysis
+# offset = 2
+# signal_o = signal + offset
 
-# Add white noise and repeat the analysis
+# plt.figure(figsize=(10,4))
+# plt.plot(t, signal_o)
+# plt.title('Signal with offset')
+# plt.xlabel('Time (s)')
+# plt.ylabel('Amplitude')
+# plt.grid(True)
+# plt.show()
 
-# Add a linearly time varying frequency component and repeat the analysis (frequency=kt)
+# # Add white noise and repeat the analysis
+# mean = 0
+# std = 0.5
+# num_samples = len(t)
+# white_noise = np.random.normal(mean, std, size=num_samples)
 
-# Add an offset and white noise and repeat the analysis
+# signal_wn = signal + white_noise
+# plt.figure(figsize=(10,4))
+# plt.plot(t, signal_wn)
+# plt.title('Signal with white noise')
+# plt.show()
 
+# # Add a linearly time varying frequency component and repeat the analysis (frequency=kt)
+# fmin, fmax = 0.0, 0.05
+
+# lin_var_freq_comp, _ = fmlin(len(t), fmin, fmax)
+# lin_var_freq_comp = np.real(lin_var_freq_comp)
+# signal_lfq = signal + lin_var_freq_comp
+
+# plt.figure(figsize=(10,4))
+# plt.plot(t, signal_lfq)
+# plt.title('Signal with Linearly varying frequency component')
+# plt.show()
+
+# # Add an offset and white noise and repeat the analysis
+# signal_wn_and_o = signal + white_noise + offset
+# plt.figure(figsize=(10,4))
+# plt.plot(t, signal_wn)
+# plt.title('Signal with offset and white noise')
+# plt.xlabel('Time (s)')
+# plt.ylabel('Amplitude')
+# plt.grid(True)
+# plt.show()
