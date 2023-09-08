@@ -23,12 +23,16 @@ plt.ylabel('Amplitude')
 plt.grid(True)
 plt.show()
 
-# Analyse the final signal: stationary or non-stationary
+## Analyse the final signal: stationary or non-stationary
+# The final signal is stationary because it doesn't cahnge over time
 
 # Run a FFT analysis to get an idea of the frequency components. 
 # Reflect on the results of this analysis
 
+
+
 # How to decide the window size if STFT or WT is going to be used?
+
 
 # Which signal processing technique is best for your signal (FFT, STFT, WVT, WT, HT)?
 
