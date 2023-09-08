@@ -38,21 +38,22 @@ signal = np.sum(components, axis=0)
 
 
 ## Analyse the final signal: stationary or non-stationary
-# The final signal is stationary because it doesn't cahnge over time
+# The final signal is stationary because it doesn't change over time
 
 # Run a FFT analysis to get an idea of the frequency components. 
 # Reflect on the results of this analysis
-# fft_result = np.fft.fft(signal)
-# frequencies = np.fft.fftfreq(len(fft_result), 1 / fs)
+def fft(signal):
+    fft_result = np.fft.fft(signal)
+    frequencies = np.fft.fftfreq(len(fft_result), 1 / fs)
 
-# plt.figure(figsize=(8, 4))
-# plt.plot(frequencies, np.abs(fft_result))
-# plt.title("FFT of the Signal")
-# plt.xlabel("Frequency (Hz)")
-# plt.ylabel("Amplitude")
-# plt.grid(True)
-# plt.xlim(-50, 50)
-# plt.show()
+    plt.figure(figsize=(8, 4))
+    plt.plot(frequencies, np.abs(fft_result))
+    plt.title("FFT of the Signal")
+    plt.xlabel("Frequency (Hz)")
+    plt.ylabel("Amplitude")
+    plt.grid(True)
+    plt.xlim(-50, 50)
+    plt.show()
 
 ## How to decide the window size if STFT or WT is going to be used?
 # Since we are dealing with a stationary signal a longer window is preferred to capture
@@ -62,21 +63,27 @@ signal = np.sum(components, axis=0)
 ## Which signal processing technique is best for your signal (FFT, STFT, WVT, WT, HT)?
 
 # STFT
-fwindow = hamming(1000)
-spec = Spectrogram(signal, n_fbins=128, fwindow=fwindow)
-spec.run()
-spec.plot(kind="contour", threshold=0.1, show_tf=False)
+def stft(signal):
+    fwindow = hamming(1000)
+    spec = Spectrogram(signal, n_fbins=128, fwindow=fwindow)
+    spec.run()
+    spec.plot(kind="contour", threshold=0.1, show_tf=False)
 
 # WVT
-n_points = 128
-fmin, fmax = 0.0, 0.5
-wvd = WignerVilleDistribution(signal)
-wvd.run()
-wvd.plot(kind='contour', extent=[0, n_points, fmin, fmax])
+def wvt(signal): 
+    n_points = 128
+    fmin, fmax = 0.0, 0.5
+    wvd = WignerVilleDistribution(signal)
+    wvd.run()
+    wvd.plot(kind='contour', extent=[0, n_points, fmin, fmax])
+
 
 # Hilbert Transform / Instantaneous Frequency
-ifr = inst_freq(signal)[0]
-plotifl(np.linspace(0,len(ifr), len(ifr)), ifr)
+def ht(signal):
+    ifr = inst_freq(signal)[0]
+    plotifl(np.linspace(0,len(ifr), len(ifr)), ifr)
+
+
 
 # # Add an offset and repeat the analysis
 # offset = 2
