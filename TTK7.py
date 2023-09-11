@@ -11,20 +11,19 @@ from functions import *
 # Since we are dealing with a stationary signal a longer window is preferred to capture
 # more frequency details. A longer window is also preferred as the frequency components are of low frequency.
 
-# Define the time values
-N = 3000
-fs = 1000
-dt = 1 / fs
-t = np.arange(0, N*dt, dt)
+# Sample rate and duration of the signal
+sample_rate = 1000  # Hz
+duration = 3.0  # seconds
+num_samples = int(sample_rate * duration)
 
-# Define the frequencies of the three components
-frequencies = [5, 12, 15]  # Frequencies in Hz
+# Create a time vector
+t = np.linspace(0, duration, num_samples, endpoint=False)
 
-# Create the sinusoidal waveforms for all three components as a vector
-components = np.sin(2 * np.pi * np.outer(frequencies, t))
-
-# Combine the three components to create the signal
-signal = np.sum(components, axis=0)
+# Create your signal with three components (5 Hz, 12 Hz, 15 Hz)
+component_1 = np.sin(2 * np.pi * 5 * time)
+component_2 = np.sin(2 * np.pi * 12 * time)
+component_3 = np.sin(2 * np.pi * 15 * time)
+signal = component_1 + component_2 + component_3
 
 # Plot the signal
 plt.figure(figsize=(10, 4))
@@ -69,6 +68,9 @@ signal_wn = signal + white_noise
 plt.figure(figsize=(10,4))
 plt.plot(t, signal_wn)
 plt.title('Signal with white noise')
+plt.xlabel('Time (s)')
+plt.ylabel('Amplitude')
+plt.grid(True)
 plt.show()
 
 fft(signal_wn)
@@ -87,6 +89,9 @@ signal_lfq = signal + lin_var_freq_comp
 plt.figure(figsize=(10,4))
 plt.plot(t, signal_lfq)
 plt.title('Signal with Linearly varying frequency component')
+plt.xlabel('Time (s)')
+plt.ylabel('Amplitude')
+plt.grid(True)
 plt.show()
 
 fft(signal_lfq)
