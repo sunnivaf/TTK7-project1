@@ -1,10 +1,7 @@
-from tftb.generators import amgauss, fmlin, fmconst
+from tftb.generators import fmlin
 import matplotlib.pyplot as plt
 import numpy as np
-from scipy.fft import fft, fftfreq
-from tftb.processing import WignerVilleDistribution, inst_freq, plotifl
-from scipy.signal import hamming
-from tftb.processing import Spectrogram
+from scipy.fft import fft
 from functions import *
 
 ## Analyse the final signal: stationary or non-stationary
@@ -15,14 +12,10 @@ from functions import *
 # more frequency details. A longer window is also preferred as the frequency components are of low frequency.
 
 # Define the time values
-# t = np.linspace(0, 3000, 1000)  # Time from 0 to 1 second, with 1000 points
 N = 3000
 fs = 1000
 dt = 1 / fs
 t = np.arange(0, N*dt, dt)
-
-# Print the result
-print("Sampling Frequency:", fs, "Hz")
 
 # Define the frequencies of the three components
 frequencies = [5, 12, 15]  # Frequencies in Hz
@@ -34,15 +27,19 @@ components = np.sin(2 * np.pi * np.outer(frequencies, t))
 signal = np.sum(components, axis=0)
 
 # Plot the signal
-# plt.figure(figsize=(10, 6))
-# plt.plot(t, signal)
-# plt.title('Signal with 5Hz, 12Hz, and 15Hz Components')
-# plt.xlabel('Time (s)')
-# plt.ylabel('Amplitude')
-# plt.grid(True)
-# plt.show()
+plt.figure(figsize=(10, 4))
+plt.plot(t, signal)
+plt.title('Signal with 5Hz, 12Hz, and 15Hz Components')
+plt.xlabel('Time (s)')
+plt.ylabel('Amplitude')
+plt.grid(True)
+plt.show()
 
 fft(signal)
+stft(signal)
+wvt(signal)
+wt(signal)
+ht(signal)
 
 # Add an offset and repeat the analysis
 offset = 2
@@ -57,14 +54,14 @@ plt.grid(True)
 plt.show()
 
 fft(signal_o)
-stft(signal)
+stft(signal_o)
 wvt(signal_o)
 wt(signal_o)
 ht(signal_o)
 
 # Add white noise and repeat the analysis
 mean = 0
-std = 0.5
+std = 3
 num_samples = len(t)
 white_noise = np.random.normal(mean, std, size=num_samples)
 
