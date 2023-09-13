@@ -37,13 +37,14 @@ def fft(signal):
 ## Which signal processing technique is best for your signal (FFT, STFT, WVT, WT, HT)?
 
 # STFT
-def stft(signal):
-    f, t, Sxx = spectrogram(signal, fs=sample_rate, nperseg=1000)
+def stft(signal, window_size=500, overlap=250):
+    f, t, Sxx = spectrogram(signal, fs=sample_rate, noverlap=overlap, nperseg=window_size)
     if plot_default:
         plt.pcolormesh(t, f, np.abs(Sxx), shading='gouraud')
         plt.title('STFT Magnitude')
         plt.ylabel('Frequency [Hz]')
         plt.xlabel('Time [sec]')
+        plt.ylim([0, 50])
         plt.show()
     return f, t, np.abs(Sxx)
 
