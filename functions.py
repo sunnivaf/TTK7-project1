@@ -5,6 +5,7 @@ from scipy.fft import fft, fftfreq
 from tftb.processing import WignerVilleDistribution, inst_freq, plotifl
 from scipy.signal import hamming, cwt, ricker, spectrogram
 from scipy.signal import hilbert
+import pywt
 
 # Sample rate and duration of the signal
 sample_rate = 1000  # Hz
@@ -13,7 +14,7 @@ num_samples = int(sample_rate * duration)
 
 # Create a time vector
 time = np.linspace(0, duration, num_samples, endpoint=False)
-plot_default = False
+plot_default = True
 
 # Run a FFT analysis to get an idea of the frequency components. 
 # Reflect on the results of this analysis
@@ -88,22 +89,25 @@ def ht(signal):
 
 
 # Wavelet Transform
-def wt(signal):
-    widths = np.arange(1, 31)
-    cwtmatr = cwt(signal, ricker, widths)
-    cwtmatr_yflip = np.flipud(cwtmatr)
+def wt(t, signal):
+    freq = np.linspace(1, sample_rate/2, 100)
+    w = 6.
+    widths = w*sample_rate / (2*freq*np.pi)
+    
+    cwtm, freqs = pywt.cwt(signal, widths, 'morl')
+    
     if (plot_default):
-        # Plot the CWT matrix
-        plt.imshow(cwtmatr_yflip, extent=[-1, 1, 1, 31], cmap='PRGn', aspect='auto',
-                vmax=abs(cwtmatr).max(), vmin=-abs(cwtmatr).max())
-        
+        freq = np.linspace(1, sample_rate/2, 100)
+        plt.pcolormesh(t, freq, np.abs(cwtm), cmap='viridis', shading='gouraud')
+    
         # Add axis labels
         plt.xlabel('Time')
-        plt.ylabel('Scale')
+        plt.ylabel('Frequency (Hz)')
         plt.title('Wavelet Transform')
-        
+        plt.ylim([0, 200])
+
         plt.show()
-    return cwtmatr
+    return cwtm
 
 def plot_originals(signals, labels):
     plt.figure(figsize=(8, 2*len(labels)))
