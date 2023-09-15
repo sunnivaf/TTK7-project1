@@ -3,8 +3,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from scipy.fft import fft, fftfreq
 from tftb.processing import WignerVilleDistribution, inst_freq, plotifl
-from scipy.signal import hamming, cwt, ricker, spectrogram
-from scipy.signal import hilbert
+from scipy.signal import hamming, cwt, ricker, spectrogram, hilbert, stft
 import pywt
 
 # Sample rate and duration of the signal
@@ -38,10 +37,12 @@ def fft(signal):
 ## Which signal processing technique is best for your signal (FFT, STFT, WVT, WT, HT)?
 
 # STFT
-def stft(signal, window_size=500, overlap=250):
-    f, t, Sxx = spectrogram(signal, fs=sample_rate, noverlap=overlap, nperseg=window_size)
+def plot_stft(signal):
+    f, t, Sxx = stft(signal, fs = sample_rate, nperseg=1000, noverlap=250)
+
     if plot_default:
         plt.pcolormesh(t, f, np.abs(Sxx), shading='gouraud')
+        plt.colorbar(label='Magnitude [dB]')
         plt.title('STFT Magnitude')
         plt.ylabel('Frequency [Hz]')
         plt.xlabel('Time [sec]')
@@ -51,13 +52,33 @@ def stft(signal, window_size=500, overlap=250):
 
 # WVT
 def wvt(signal): 
-    n_points = 128
-    fmin, fmax = 0.0, 0.5
+    # Compute the Wigner-Ville distribution without frequency normalization
     wvd = WignerVilleDistribution(signal)
+    wvd.run()
+
     if plot_default:
-        wvd.run()
-        wvd.plot(kind='contour', extent=[0, n_points, fmin, fmax])
-    return wvd, n_points, fmin, fmax
+        wvd.plot()
+        wvd.plot(kind='contour')
+    return wvd
+
+
+#alternative
+# def wvt(signal): 
+#     # Compute the Wigner-Ville distribution without frequency normalization
+#     wvd = WignerVilleDistribution(signal, compute_post_transform=False)
+#     tfr_wvd, _, _ = wvd.run()
+
+#     if plot_default:
+#         # Plot the Wigner-Ville distribution for positive frequencies
+#         plt.figure(figsize=(10, 6))
+#         plt.imshow(np.abs(tfr_wvd), origin='lower', aspect='auto', cmap='viridis')
+#         plt.xlabel('Time')
+#         plt.ylabel('Frequency')
+#         plt.title('Wigner-Ville Distribution')
+#         plt.colorbar(label='Magnitude')
+#         plt.ylim([0, 200])
+#         plt.show()
+#     return wvd
 
 # Hilbert Transform / Instantaneous Frequency
 def ht(signal):
@@ -99,7 +120,7 @@ def wt(t, signal):
     if (plot_default):
         freq = np.linspace(1, sample_rate/2, 100)
         plt.pcolormesh(t, freq, np.abs(cwtm), cmap='viridis', shading='gouraud')
-    
+        plt.colorbar(label='Magnitude [dB]')
         # Add axis labels
         plt.xlabel('Time')
         plt.ylabel('Frequency (Hz)')
