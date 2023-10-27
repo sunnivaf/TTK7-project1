@@ -17,7 +17,7 @@ plot_default = True
 
 # Run a FFT analysis to get an idea of the frequency components. 
 # Reflect on the results of this analysis
-def fft(signal):
+def fft(signal, num_samples, sample_rate):
     fft_result = np.fft.fft(signal)
     freq = np.fft.fftfreq(num_samples, 1 / sample_rate)
 
@@ -29,7 +29,7 @@ def fft(signal):
         plt.xlabel('Frequency (Hz)')
         plt.ylabel('Magnitude')
         plt.grid(True)
-        plt.xlim(-20, 20)  # Limit the x-axis to show frequencies up to 20 Hz
+        plt.xlim(0, 50)  # Limit the x-axis to show frequencies up to 20 Hz
         plt.show()
     return (freq, np.abs(fft_result))
 
