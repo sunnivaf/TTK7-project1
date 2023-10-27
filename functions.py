@@ -5,6 +5,9 @@ from scipy.fft import fft, fftfreq
 from tftb.processing import WignerVilleDistribution, inst_freq, plotifl
 from scipy.signal import hamming, cwt, ricker, spectrogram, hilbert, stft
 import pywt
+from pyhht.visualization import plot_imfs
+from pyhht import EMD
+#from JD_utils import inst_freq, extr, get_envelops
 
 # Sample rate and duration of the signal
 sample_rate = 1000  # Hz
@@ -88,14 +91,14 @@ def ht(signal):
     instantaneous_frequency = (np.diff(instantaneous_phase) / (2.0*np.pi) * sample_rate)
     
     if plot_default:
-        plt.figure(figsize=(12, 6))
-        plt.title('Hilbert Transform')
+        plt.figure()
 
         plt.subplot(211)
         plt.plot(time, signal, label='Original Signal')
         plt.plot(time, amplitude_envelope, label='Instantaneous Amplitude')
         plt.title('Original Signal')
         plt.xlabel('Time (s)')
+        plt.xlim()
         plt.grid(True)
 
         plt.subplot(212)
@@ -103,10 +106,23 @@ def ht(signal):
         plt.title('Instantaneous Frequency')
         plt.xlabel('Time (s)')
         plt.grid(True)
+    
+    plt.tight_layout()
+    plt.show()
 
-        plt.tight_layout()
-        plt.show()
-    return analytic_signal, amplitude_envelope, instantaneous_frequency
+
+    return amplitude_envelope, instantaneous_frequency
+# Hilbert Huang Transform
+
+def hht(t, signal):
+    modes = signal;
+    decomposer = EMD(modes);
+    imfs = decomposer.decompose();
+    plot_imfs(modes, imfs, t) ;
+
+    for imf in imfs[0:len(imfs)-1]:
+        amplitude_envelope, instantaneous_frequency = ht(imf)
+
 
 
 # Wavelet Transform
@@ -129,6 +145,7 @@ def wt(t, signal):
 
         plt.show()
     return cwtm
+
 
 def plot_originals(signals, labels):
     plt.figure(figsize=(8, 2*len(labels)))
@@ -161,7 +178,7 @@ def plot_ffts(ffts, labels):
         ax = plt.gca()
         ax.set_xticklabels([])
         plt.grid(True)
-        plt.xlim(-20, 20)  # Limit the x-axis to show frequencies up to 20 Hz
+        plt.xlim(0, 20)  # Limit the x-axis to show frequencies up to 20 Hz
     
     plt.subplots_adjust(top=0.962, bottom=0.055, left=0.10, right=0.95, hspace=0.20,
                     wspace=0.219)

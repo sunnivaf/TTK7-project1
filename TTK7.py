@@ -115,6 +115,12 @@ signal_wn_and_o = signal + white_noise + offset
 # wt(signal_wn_and_o)
 # ht(signal_wn_and_o)
 
+# hht(t, signal)
+# hht(t, signal_o)
+# hht(t, signal_wn)
+# hht(t, signal_wn_and_o)
+hht(t, signal_lfq)
+
 labels = ['Original', 'Offset', 'White Noise', 'Linearly Time Varying Frequency', 'White Noise and Offset']
 signals = [signal, signal_o, signal_wn, signal_lfq, signal_wn_and_o]
 plot_originals(signals, labels)
