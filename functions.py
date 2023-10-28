@@ -5,8 +5,8 @@ from scipy.fft import fft, fftfreq
 from tftb.processing import WignerVilleDistribution, inst_freq, plotifl
 from scipy.signal import hamming, cwt, ricker, spectrogram, hilbert, stft
 import pywt
-from pyhht.visualization import plot_imfs
-from pyhht import EMD
+# from pyhht.visualization import plot_imfs
+# from pyhht import EMD
 #from JD_utils import inst_freq, extr, get_envelops
 
 # Sample rate and duration of the signal
@@ -40,7 +40,7 @@ def fft(signal, num_samples, sample_rate):
 ## Which signal processing technique is best for your signal (FFT, STFT, WVT, WT, HT)?
 
 # STFT
-def plot_stft(signal):
+def plot_stft(signal, sample_rate):
     f, t, Sxx = stft(signal, fs = sample_rate, nperseg=1000, noverlap=250)
 
     if plot_default:
@@ -84,7 +84,7 @@ def wvt(signal):
 #     return wvd
 
 # Hilbert Transform / Instantaneous Frequency
-def ht(signal):
+def ht(signal, sample_rate):
     analytic_signal = hilbert(signal)
     amplitude_envelope = np.abs(analytic_signal)
     instantaneous_phase = np.unwrap(np.angle(analytic_signal))
@@ -114,19 +114,19 @@ def ht(signal):
     return amplitude_envelope, instantaneous_frequency
 # Hilbert Huang Transform
 
-def hht(t, signal):
-    modes = signal;
-    decomposer = EMD(modes);
-    imfs = decomposer.decompose();
-    plot_imfs(modes, imfs, t) ;
+# def hht(t, signal):
+#     modes = signal;
+#     decomposer = EMD(modes);
+#     imfs = decomposer.decompose();
+#     plot_imfs(modes, imfs, t) ;
 
-    for imf in imfs[0:len(imfs)-1]:
-        amplitude_envelope, instantaneous_frequency = ht(imf)
+#     for imf in imfs[0:len(imfs)-1]:
+#         amplitude_envelope, instantaneous_frequency = ht(imf)
 
 
 
 # Wavelet Transform
-def wt(t, signal):
+def wt(t, signal, sample_rate):
     freq = np.linspace(1, sample_rate/2, 100)
     w = 6.
     widths = w*sample_rate / (2*freq*np.pi)
