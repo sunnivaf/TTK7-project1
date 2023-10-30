@@ -5,8 +5,8 @@ from scipy.fft import fft, fftfreq
 from tftb.processing import WignerVilleDistribution, inst_freq, plotifl
 from scipy.signal import hamming, cwt, ricker, spectrogram, hilbert, stft
 import pywt
-# from pyhht.visualization import plot_imfs
-# from pyhht import EMD
+from pyhht.visualization import plot_imfs
+from pyhht import EMD
 #from JD_utils import inst_freq, extr, get_envelops
 
 # Sample rate and duration of the signal
@@ -20,11 +20,11 @@ plot_default = True
 
 # Run a FFT analysis to get an idea of the frequency components. 
 # Reflect on the results of this analysis
-def fft(signal, num_samples, sample_rate):
+def fft(signal, num_samples, sample_rate, plot=True):
     fft_result = np.fft.fft(signal)
     freq = np.fft.fftfreq(num_samples, 1 / sample_rate)
 
-    if plot_default:
+    if plot:
         # Plot the magnitude spectrum
         plt.figure(figsize=(10, 6))
         plt.plot(freq, np.abs(fft_result))
@@ -40,10 +40,10 @@ def fft(signal, num_samples, sample_rate):
 ## Which signal processing technique is best for your signal (FFT, STFT, WVT, WT, HT)?
 
 # STFT
-def plot_stft(signal, sample_rate, nperseg=1000, noverlap=250):
+def plot_stft(signal, sample_rate, nperseg=1000, noverlap=250, plot=False):
     f, t, Sxx = stft(signal, fs = sample_rate, nperseg=nperseg, noverlap=noverlap)
 
-    if plot_default:
+    if plot:
         plt.pcolormesh(t, f, np.abs(Sxx), shading='gouraud')
         plt.colorbar(label='Magnitude [dB]')
         plt.title('STFT Magnitude')
@@ -84,51 +84,50 @@ def wvt(signal):
 #     return wvd
 
 # Hilbert Transform / Instantaneous Frequency
-def ht(signal, sample_rate):
+def ht(t, signal, sample_rate, plot=True):
     analytic_signal = hilbert(signal)
     amplitude_envelope = np.abs(analytic_signal)
     instantaneous_phase = np.unwrap(np.angle(analytic_signal))
     instantaneous_frequency = (np.diff(instantaneous_phase) / (2.0*np.pi) * sample_rate)
     
-    if plot_default:
+    if plot:
         plt.figure()
 
         plt.subplot(211)
-        plt.plot(time, signal, label='Original Signal')
-        plt.plot(time, amplitude_envelope, label='Instantaneous Amplitude')
+        plt.plot(t, signal, label='Original Signal')
+        plt.plot(t, amplitude_envelope, label='Instantaneous Amplitude')
         plt.title('Original Signal')
         plt.xlabel('Time (s)')
         plt.xlim()
         plt.grid(True)
 
         plt.subplot(212)
-        plt.plot(time[1:], instantaneous_frequency , label='Instantaneous Frequency')
+        plt.plot(t[1:], instantaneous_frequency , label='Instantaneous Frequency')
         plt.title('Instantaneous Frequency')
         plt.xlabel('Time (s)')
         plt.grid(True)
-    
-    plt.tight_layout()
-    plt.show()
-
+        
+        plt.tight_layout()
+        plt.show()
 
     return amplitude_envelope, instantaneous_frequency
+
 # Hilbert Huang Transform
+def hht(t, signal, plot=True):
+    modes = signal;
+    decomposer = EMD(modes);
+    imfs = decomposer.decompose();
+    if plot:
+        plot_imfs(modes, imfs, t) ;
 
-# def hht(t, signal):
-#     modes = signal;
-#     decomposer = EMD(modes);
-#     imfs = decomposer.decompose();
-#     plot_imfs(modes, imfs, t) ;
+    # for imf in imfs[0:len(imfs)-1]:
+    #     amplitude_envelope, instantaneous_frequency = ht(imf)
 
-#     for imf in imfs[0:len(imfs)-1]:
-#         amplitude_envelope, instantaneous_frequency = ht(imf)
-
-
+    return imfs
 
 # Wavelet Transform
-def wt(t, signal, sample_rate):
+def wt(t, signal, sample_rate, w=6.0):
     freq = np.linspace(1, sample_rate/2, 100)
-    w = 6.
     widths = w*sample_rate / (2*freq*np.pi)
     
     cwtm, freqs = pywt.cwt(signal, widths, 'morl')
