@@ -40,8 +40,8 @@ def fft(signal, num_samples, sample_rate):
 ## Which signal processing technique is best for your signal (FFT, STFT, WVT, WT, HT)?
 
 # STFT
-def plot_stft(signal, sample_rate):
-    f, t, Sxx = stft(signal, fs = sample_rate, nperseg=1000, noverlap=250)
+def plot_stft(signal, sample_rate, nperseg=1000, noverlap=250):
+    f, t, Sxx = stft(signal, fs = sample_rate, nperseg=nperseg, noverlap=noverlap)
 
     if plot_default:
         plt.pcolormesh(t, f, np.abs(Sxx), shading='gouraud')
