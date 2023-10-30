@@ -20,11 +20,11 @@ plot_default = True
 
 # Run a FFT analysis to get an idea of the frequency components. 
 # Reflect on the results of this analysis
-def fft(signal, num_samples, sample_rate):
+def fft(signal, num_samples, sample_rate, plot=True):
     fft_result = np.fft.fft(signal)
     freq = np.fft.fftfreq(num_samples, 1 / sample_rate)
 
-    if plot_default:
+    if plot:
         # Plot the magnitude spectrum
         plt.figure(figsize=(10, 6))
         plt.plot(freq, np.abs(fft_result))
@@ -40,10 +40,10 @@ def fft(signal, num_samples, sample_rate):
 ## Which signal processing technique is best for your signal (FFT, STFT, WVT, WT, HT)?
 
 # STFT
-def plot_stft(signal, sample_rate, nperseg=1000, noverlap=250):
+def plot_stft(signal, sample_rate, nperseg=1000, noverlap=250, plot=False):
     f, t, Sxx = stft(signal, fs = sample_rate, nperseg=nperseg, noverlap=noverlap)
 
-    if plot_default:
+    if plot:
         plt.pcolormesh(t, f, np.abs(Sxx), shading='gouraud')
         plt.colorbar(label='Magnitude [dB]')
         plt.title('STFT Magnitude')
