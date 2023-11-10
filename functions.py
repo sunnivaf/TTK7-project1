@@ -5,8 +5,11 @@ from scipy.fft import fft, fftfreq
 from tftb.processing import WignerVilleDistribution, inst_freq, plotifl
 from scipy.signal import hamming, cwt, ricker, spectrogram, hilbert, stft
 import pywt
-from pyhht.visualization import plot_imfs
+# from pyhht.visualization import plot_imfs
 from pyhht import EMD
+from PyEMD import EEMD, CEEMDAN
+
+
 # from JD_utils import inst_freq, extr, get_envelops
 
 # Sample rate and duration of the signal
@@ -119,20 +122,54 @@ def ht(t, signal, sample_rate, plot=True):
 
     return amplitude_envelope, instantaneous_frequency
 
-# Hilbert Huang Transform
 
+def plot_imfs(imfs, t, signal):
+    plt.figure(figsize=(12, 3*(len(imfs)+1)))
+    plt.subplot(len(imfs)+1, 1, 1)
+    plt.plot(t, signal)
+    plt.ylabel('Signal')
+    plt.grid(True)
+    for idx, imf in enumerate(imfs):
+        plt.subplot(len(imfs)+1, 1, idx+2)
+        plt.plot(t, imf)
+        plt.ylabel(f'imf{idx+1}')
+        plt.grid(True)
+    plt.show()
+
+
+def extended_emd(t, signal, trials=100, noise_width=0.05, plot=False):
+    modes = signal
+    eemd = EEMD(trials=trials, noise_width=noise_width)
+    eIMFs = eemd(modes, t)
+
+    if plot:
+        plot_imfs(eIMFs, t, modes)
+    
+    return eIMFs
+
+
+def ceemdan(t, signal, trials=100, noise_width=0.05, plot=False):
+    modes = signal
+    ceemdan = CEEMDAN(trials=trials, noise_width=noise_width)
+    eIMFs = ceemdan(modes, t)
+
+    if plot:
+        plot_imfs(eIMFs, t, modes)
+    
+    return eIMFs
 
 def hht(t, signal, plot=True):
     modes = signal
     decomposer = EMD(modes)
     imfs = decomposer.decompose()
     if plot:
-        plot_imfs(modes, imfs, t)
+        plot_imfs(imfs, t, modes)
 
     # for imf in imfs[0:len(imfs)-1]:
     #     amplitude_envelope, instantaneous_frequency = ht(imf)
 
     return imfs
+
 
 # Wavelet Transform
 
