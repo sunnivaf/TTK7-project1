@@ -7,7 +7,10 @@ from scipy.signal import hamming, cwt, ricker, spectrogram, hilbert, stft
 import pywt
 # from pyhht.visualization import plot_imfs
 from pyhht import EMD
-from PyEMD import EEMD, CEEMDAN
+try:
+    from PyEMD import EEMD, CEEMDAN
+except:
+    print("Could not load PyEMD")
 
 
 # from JD_utils import inst_freq, extr, get_envelops
@@ -144,7 +147,7 @@ def extended_emd(t, signal, trials=100, noise_width=0.05, plot=False):
 
     if plot:
         plot_imfs(eIMFs, t, modes)
-    
+
     return eIMFs
 
 
@@ -155,8 +158,9 @@ def ceemdan(t, signal, trials=100, noise_width=0.05, plot=False):
 
     if plot:
         plot_imfs(eIMFs, t, modes)
-    
+
     return eIMFs
+
 
 def hht(t, signal, plot=True):
     modes = signal
